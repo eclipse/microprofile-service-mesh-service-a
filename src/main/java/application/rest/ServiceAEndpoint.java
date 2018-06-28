@@ -60,7 +60,7 @@ public class ServiceAEndpoint {
     @Retry
     @Fallback(fallbackMethod="serviceAFallback")
     @Produces(MediaType.TEXT_PLAIN)
-    public String callServiceB() {
+    public String callServiceB() throws Exception {
 
       ++callCount;
       ++tries;
@@ -80,7 +80,7 @@ public class ServiceAEndpoint {
         return "Hello from serviceAFallback at " + new Date() + " (ServiceA call count: " + callCount + ")\nCompletely failed to call " + url + " after " + tries + " tries";
     }
 
-    private String callService(StringBuilder url) {
+    private String callService(StringBuilder url) throws Exception {
 
         StringBuilder sb = new StringBuilder();
 
