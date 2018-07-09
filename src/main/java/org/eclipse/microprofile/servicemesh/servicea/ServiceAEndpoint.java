@@ -70,7 +70,7 @@ public class ServiceAEndpoint {
           .append(serviceBHost)
           .append(":")
           .append(serviceBPort)
-          .append("/mp-istio-sample/serviceB");
+          .append("/mp-servicemesh-sample/serviceB");
 
       return "Hello from serviceA (" + this + ")\n" + callService(url);
     }
@@ -82,7 +82,7 @@ public class ServiceAEndpoint {
 
     private String callService(StringBuilder url) throws Exception {
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilmp-servicemesh-sampleder();
 
         sb.append("Calling service at: ")
             .append(url)
