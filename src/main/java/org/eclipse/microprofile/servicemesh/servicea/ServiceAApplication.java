@@ -23,12 +23,12 @@
  *
  *******************************************************************************/
 
-package application.rest;
+package org.eclipse.microprofile.servicemesh.servicea;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("mp-istio-sample")
+@ApplicationPath("mp-servicemesh-sample")
 public class ServiceAApplication extends Application {
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>projects</groupId>
+  <groupId>org.eclipse.microprofile.servicemesh</groupId>
   <artifactId>service-a</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
@@ -12,22 +12,9 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <app.name>service-a</app.name>
-    <testServerHttpPort>9080</testServerHttpPort>
-    <testServerHttpsPort>9443</testServerHttpsPort>
-    <warContext>${app.name}</warContext>
-    <package.file>${project.build.directory}/${project.artifactId}-${project.version}.zip</package.file>
-    <packaging.type>usr</packaging.type>
-
-    <!-- Plugins -->
     <version.maven-war-plugin>2.6</version.maven-war-plugin>
-    <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
     <version.download-maven-plugin>1.4.0</version.download-maven-plugin>
     <version.maven-surefire-plugin>2.18.1</version.maven-surefire-plugin>
-    <version.maven-failsafe-plugin>2.18.1</version.maven-failsafe-plugin>
-
-    <!-- OpenLiberty runtime -->
-    <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
     <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
   </properties>
 
@@ -39,41 +26,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-rs-client</artifactId>
-      <version>3.1.11</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.json</artifactId>
-      <version>1.0.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.microprofile</groupId>
       <artifactId>microprofile</artifactId>
-      <version>1.2</version>
+      <version>1.3</version>
       <scope>provided</scope>
       <type>pom</type>
-    </dependency>
-    <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <version>2.0.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-rs-extension-providers</artifactId>
-      <version>3.1.11</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -121,12 +78,35 @@
         <mvn.extension></mvn.extension>
       </properties>
     </profile>
-    <!-- Open Liberty Profile -->
+    <!-- Liberty Profile -->
     <profile>
-      <id>open-liberty</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
+      <id>liberty</id>
+      <properties>
+        <app.name>${project.artifactid}</app.name>
+        <testServerHttpPort>8080</testServerHttpPort>
+        <testServerHttpsPort>8443</testServerHttpsPort>
+        <version.maven-failsafe-plugin>2.18.1</version.maven-failsafe-plugin>
+        <warContext>${app.name}</warContext>
+        <package.file>${project.build.directory}/${project.artifactId}-${project.version}.zip</package.file>
+        <packaging.type>usr</packaging.type>
+        <!-- Liberty runtime -->
+        <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
+        <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-rs-client</artifactId>
+          <version>3.1.11</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-rs-extension-providers</artifactId>
+          <version>3.1.11</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <!-- Liberty plugin -->
@@ -141,7 +121,7 @@
                 <version>${version.openliberty-runtime}</version>
                 <type>zip</type>
               </assemblyArtifact>
-              <configFile>src/main/liberty/config/server.xml</configFile>
+              <configFile>src/main/profiles/liberty/config/server.xml</configFile>
               <include>usr</include>
               <bootstrapProperties>
                 <app.location>${project.artifactId}.war</app.location>
@@ -193,7 +173,7 @@
               </execution>
             </executions>
           </plugin>
-          <!-- For downloading files -->
+          <!-- For Zipkin -->
           <plugin>
             <groupId>com.googlecode.maven-download-plugin</groupId>
             <artifactId>download-maven-plugin</artifactId>
@@ -213,11 +193,34 @@
               </execution>
             </executions>
           </plugin>
+          <!-- Copy Liberty specific deployment descriptor -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-resources</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${basedir}/target/${project.artifactId}-${project.version}</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${basedir}/src/main/profiles/liberty/webapp</directory>
+                      <filtering>false</filtering>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <!-- Plugin to run functional tests -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.18.1</version>
+            <version>${version.maven-failsafe-plugin}</version>
             <executions>
               <execution>
                 <phase>integration-test</phase>
