@@ -31,6 +31,6 @@ public class ServiceAEndpointTest extends EndpointTest {
 
     @Test
     public void testDeployment() {
-      testEndpoint("/mp-istio-sample/serviceA", 200, "serviceAFallback");
+      testEndpoint("/mp-servicemesh-sample/serviceA", 200, "serviceAFallback");
     }
 }
