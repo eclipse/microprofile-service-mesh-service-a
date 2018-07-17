@@ -36,7 +36,7 @@ import javax.ws.rs.core.Response;
 public class EndpointTest {
 
     public void testEndpoint(String endpoint, int expectedStatus, String expectedOutput) {
-        String port = System.getProperty("liberty.test.port");
+        String port = System.getProperty("test.port");
         String url = "http://localhost:" + port + endpoint;
         Response response = sendRequest(url, "GET");
         int responseCode = response.getStatus();

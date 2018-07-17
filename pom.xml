@@ -85,10 +85,9 @@
         <app.name>${project.artifactid}</app.name>
         <testServerHttpPort>8080</testServerHttpPort>
         <testServerHttpsPort>8443</testServerHttpsPort>
-        <version.maven-failsafe-plugin>2.18.1</version.maven-failsafe-plugin>
-        <warContext>${app.name}</warContext>
         <package.file>${project.build.directory}/${project.artifactId}-${project.version}.zip</package.file>
         <packaging.type>usr</packaging.type>
+        <version.maven-failsafe-plugin>2.18.1</version.maven-failsafe-plugin>
         <!-- Liberty runtime -->
         <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
         <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
@@ -97,12 +96,6 @@
         <dependency>
           <groupId>org.apache.cxf</groupId>
           <artifactId>cxf-rt-rs-client</artifactId>
-          <version>3.1.11</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.cxf</groupId>
-          <artifactId>cxf-rt-rs-extension-providers</artifactId>
           <version>3.1.11</version>
           <scope>test</scope>
         </dependency>
@@ -173,26 +166,6 @@
               </execution>
             </executions>
           </plugin>
-          <!-- For Zipkin -->
-          <plugin>
-            <groupId>com.googlecode.maven-download-plugin</groupId>
-            <artifactId>download-maven-plugin</artifactId>
-            <version>${version.download-maven-plugin}</version>
-            <executions>
-              <execution>
-                <id>install-tracer</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>wget</goal>
-                </goals>
-                <configuration>
-                  <url>https://repo1.maven.org/maven2/net/wasdev/wlp/tracer/liberty-opentracing-zipkintracer/1.0/liberty-opentracing-zipkintracer-1.0-sample.zip</url>
-                  <unpack>true</unpack>
-                  <outputDirectory>${project.build.directory}/liberty/wlp/usr</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
           <!-- Copy Liberty specific deployment descriptor -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -233,8 +206,7 @@
                     <include>**/it/**</include>
                   </includes>
                   <systemPropertyVariables>
-                    <liberty.test.port>${testServerHttpPort}</liberty.test.port>
-                    <war.context>${warContext}</war.context>
+                    <test.port>${testServerHttpPort}</test.port>
                   </systemPropertyVariables>
                 </configuration>
               </execution>
