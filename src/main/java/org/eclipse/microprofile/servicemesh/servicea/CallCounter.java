@@ -17,20 +17,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Contributors:
- *   2018-06-19 - Jon Hawkes / IBM Corp
- *      Initial code
- *
  *******************************************************************************/
+package org.eclipse.microprofile.servicemesh.servicea;
 
-package it;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
+import javax.enterprise.context.ApplicationScoped;
 
-public class ServiceAEndpointTest extends EndpointTest {
+/**
+ * A CDI ApplicationScoped wrapper around an AtomicInteger
+ */
+@ApplicationScoped
+public class CallCounter {
 
-    @Test
-    public void testDeployment() {
-      testEndpoint("/mp-servicemesh-sample/serviceA", 200, "fallback");
+    private AtomicInteger count = new AtomicInteger(0);
+    
+    public int increment() {
+        return count.incrementAndGet();
     }
+    
+    public int get() {
+        return count.get();
+    }
+    
 }

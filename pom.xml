@@ -16,6 +16,15 @@
     <version.download-maven-plugin>1.4.0</version.download-maven-plugin>
     <version.maven-surefire-plugin>2.18.1</version.maven-surefire-plugin>
     <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
+    
+    <serviceA.host>localhost</serviceA.host>
+    <serviceA.port.http>8080</serviceA.port.http>
+    <serviceA.port.https>8443</serviceA.port.https>
+    
+    <serviceB.host>localhost</serviceB.host>
+    <serviceB.port.http>8080</serviceB.port.http>
+    <serviceB.port.https>8443</serviceB.port.https>
+    
   </properties>
 
   <dependencies>
@@ -83,8 +92,8 @@
       <id>liberty</id>
       <properties>
         <app.name>${project.artifactid}</app.name>
-        <testServerHttpPort>8080</testServerHttpPort>
-        <testServerHttpsPort>8443</testServerHttpsPort>
+        <testServerHttpPort>${serviceA.port.http}</testServerHttpPort>
+        <testServerHttpsPort>${serviceA.port.https}</testServerHttpsPort>
         <package.file>${project.build.directory}/${project.artifactId}-${project.version}.zip</package.file>
         <packaging.type>usr</packaging.type>
         <version.maven-failsafe-plugin>2.18.1</version.maven-failsafe-plugin>

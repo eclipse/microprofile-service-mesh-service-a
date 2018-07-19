@@ -1,9 +1,9 @@
 <server description="Sample Liberty server">
 
   <featureManager>
-    <!-- Pending issue #4275
-    <feature>microprofile-1.3</feature>
-    -->
+    <!-- Pending issue #4275 -->
+    <!--<feature>microprofile-1.3</feature>-->
+
     <feature>mpFaultTolerance-1.0</feature>
     <feature>mpHealth-1.0</feature>
     <feature>mpConfig-1.2</feature>
@@ -11,7 +11,10 @@
     <feature>mpMetrics-1.1</feature>
     <feature>mpJwt-1.0</feature>
     <feature>mpOpenAPI-1.0</feature>
+    <feature>jsonp-1.0</feature>
   </featureManager>
+
+  <keyStore id="defaultKeyStore" password="m1cropr0file" />
 
   <httpEndpoint httpPort="${default.http.port}" httpsPort="${default.https.port}"
       id="defaultHttpEndpoint" host="*" />

@@ -17,20 +17,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Contributors:
- *   2018-06-19 - Jon Hawkes / IBM Corp
- *      Initial code
- *
  *******************************************************************************/
+package org.eclipse.microprofile.servicemesh.servicea;
 
-package it;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import org.junit.Test;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-public class ServiceAEndpointTest extends EndpointTest {
+/**
+ * A CDI wrapper around the ServiceB Rest Client which allows us to add fault tolerance annotations (Retry).
+ * In future versions, hopefully this won't be needed.
+ */
+@Dependent
+public class ServiceBClientImpl {
 
-    @Test
-    public void testDeployment() {
-      testEndpoint("/mp-servicemesh-sample/serviceA", 200, "fallback");
+    @Inject
+    @RestClient
+    ServiceBClient serviceBClient;
+
+    private int tries;
+
+    @Retry(maxRetries = 2)
+    public String callServiceB() throws Exception {
+        ++tries;
+
+        String serviceBData = serviceBClient.call();
+
+        return serviceBData;
     }
+
+    public int getTries() {
+        return tries;
+    }
+
 }
