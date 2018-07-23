@@ -23,6 +23,7 @@ package org.eclipse.microprofile.servicemesh.servicea;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -40,7 +41,7 @@ public class ServiceBClientImpl {
     private int tries;
 
     @Retry(maxRetries = 2)
-    public String callServiceB() throws Exception {
+    public String call() throws Exception {
         ++tries;
 
         String serviceBData = serviceBClient.call();
@@ -50,6 +51,10 @@ public class ServiceBClientImpl {
 
     public int getTries() {
         return tries;
+    }
+
+    public String getURL() {
+        return ConfigProvider.getConfig().getOptionalValue("org.eclipse.microprofile.servicemesh.servicea.ServiceBClient/mp-rest/url", String.class).get()+"/serviceB";
     }
 
 }

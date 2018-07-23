@@ -49,7 +49,7 @@ public class ServiceA {
 
         int callCount = callCounter.increment();
         
-        String serviceBMessage = serviceBClient.callServiceB(); //TODO change serviceB to return json which can be parsed into ServiceData
+        String serviceBMessage = serviceBClient.call(); //TODO change serviceB to return json which can be parsed into ServiceData
         ServiceData serviceBData = new ServiceData();
         serviceBData.setMessage(serviceBMessage);
 
@@ -68,7 +68,7 @@ public class ServiceA {
         ServiceData data = new ServiceData();
         data.setSource(this.toString());
         data.setCallCount(0);
-        data.setMessage("serviceA fallback");
+        data.setMessage("ServiceA fallback. ServiceB could not be reached at: "+serviceBClient.getURL());
         data.setTries(serviceBClient.getTries());
         data.setFallback(true);
 
