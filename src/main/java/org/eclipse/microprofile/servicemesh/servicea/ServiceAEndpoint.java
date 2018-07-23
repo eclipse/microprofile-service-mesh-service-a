@@ -37,7 +37,7 @@ import javax.ws.rs.core.MediaType;
  * used to automatically convert the response from serviceA into json.
  */
 @RequestScoped
-@Path("serviceA")
+@Path("/")
 public class ServiceAEndpoint {
 
     @Inject

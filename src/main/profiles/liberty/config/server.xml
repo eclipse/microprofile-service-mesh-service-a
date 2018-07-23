@@ -22,6 +22,6 @@
   <!-- Automatically expand WAR files and EAR files -->
   <applicationManager autoExpand="true"/>
 
-  <webApplication name="mp-servicemesh-sample-servicea" location="${app.location}"/>
+  <webApplication name="mp-servicemesh-sample-servicea" location="${app.location}" contextRoot="/mp-servicemesh-sample/serviceA"/>
 
 </server>

@@ -31,7 +31,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
  * A rest client interface for ServiceB.
  */
 @RegisterRestClient
-@Path("/serviceB")
+@Path("/")
 public interface ServiceBClient {
 
     //Currently produces plain text but will soon be converted to json

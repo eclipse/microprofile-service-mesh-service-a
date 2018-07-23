@@ -28,12 +28,9 @@ package org.eclipse.microprofile.servicemesh.servicea;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import org.eclipse.microprofile.faulttolerance.Fallback;
-
 /**
  * ServiceA tries to call ServiceB (via a Rest Client) and then wrap the response up in a data bean to be returned.
  * It keeps track of how many times it has been called through an ApplicationScoped CallCounter.
- * If the call to ServiceB fails then a fallback method is used instead.
  */
 @RequestScoped
 public class ServiceA {
@@ -44,34 +41,19 @@ public class ServiceA {
     @Inject
     CallCounter callCounter;
     
-    @Fallback(fallbackMethod = "fallback")
     public ServiceData call() throws Exception {
 
         int callCount = callCounter.increment();
         
-        String serviceBMessage = serviceBClient.call(); //TODO change serviceB to return json which can be parsed into ServiceData
-        ServiceData serviceBData = new ServiceData();
-        serviceBData.setMessage(serviceBMessage);
+        ServiceData serviceBData = serviceBClient.call();
 
         ServiceData data = new ServiceData();
         data.setSource(this.toString());
-        data.setMessage("Hello from serviceA");
+        data.setMessage("Hello from serviceA @ "+data.getTime());
         data.setData(serviceBData);
         data.setCallCount(callCount);
         data.setTries(serviceBClient.getTries());
         
-        return data;
-    }
-    
-    public ServiceData fallback() {
-        
-        ServiceData data = new ServiceData();
-        data.setSource(this.toString());
-        data.setCallCount(0);
-        data.setMessage("ServiceA fallback. ServiceB could not be reached at: "+serviceBClient.getURL());
-        data.setTries(serviceBClient.getTries());
-        data.setFallback(true);
-
         return data;
     }
     

@@ -31,6 +31,6 @@ public class ServiceAEndpointTest extends EndpointTest {
 
     @Test
     public void testDeployment() {
-      testEndpoint("/mp-servicemesh-sample/serviceA", 200, "fallback");
+      testEndpoint("/mp-servicemesh-sample/serviceA", 200, "ServiceBClient fallback");
     }
 }
