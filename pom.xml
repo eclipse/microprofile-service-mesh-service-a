@@ -16,6 +16,7 @@
     <version.download-maven-plugin>1.4.0</version.download-maven-plugin>
     <version.maven-surefire-plugin>2.18.1</version.maven-surefire-plugin>
     <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
+    
   </properties>
 
   <dependencies>
@@ -83,13 +84,16 @@
       <id>liberty</id>
       <properties>
         <app.name>${project.artifactid}</app.name>
-        <testServerHttpPort>8080</testServerHttpPort>
-        <testServerHttpsPort>8443</testServerHttpsPort>
+        <default.http.port>8080</default.http.port>
+        <default.https.port>8443</default.https.port>
+        <testServerHttpPort>${default.http.port}</testServerHttpPort>
+        <testServerHttpsPort>${default.https.port}</testServerHttpsPort>
         <package.file>${project.build.directory}/${project.artifactId}-${project.version}.zip</package.file>
         <packaging.type>usr</packaging.type>
         <version.maven-failsafe-plugin>2.18.1</version.maven-failsafe-plugin>
         <!-- Liberty runtime -->
         <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
+        <version.maven-resources-plugin>3.1.0</version.maven-resources-plugin>
         <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
       </properties>
       <dependencies>
@@ -118,8 +122,8 @@
               <include>usr</include>
               <bootstrapProperties>
                 <app.location>${project.artifactId}.war</app.location>
-                <default.http.port>${testServerHttpPort}</default.http.port>
-                <default.https.port>${testServerHttpsPort}</default.https.port>
+                <default.http.port>${default.http.port}</default.http.port>
+                <default.https.port>${default.https.port}</default.https.port>
               </bootstrapProperties>
               <looseApplication>false</looseApplication>
             </configuration>
@@ -170,6 +174,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-resources-plugin</artifactId>
+            <version>${version.maven-resources-plugin}</version>
             <executions>
               <execution>
                 <id>copy-resources</id>

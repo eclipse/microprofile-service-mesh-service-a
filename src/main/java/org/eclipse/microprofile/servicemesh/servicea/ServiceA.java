@@ -23,14 +23,38 @@
  *
  *******************************************************************************/
 
-package it;
+package org.eclipse.microprofile.servicemesh.servicea;
 
-import org.junit.Test;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
-public class ServiceAEndpointTest extends EndpointTest {
+/**
+ * ServiceA tries to call ServiceB (via a Rest Client) and then wrap the response up in a data bean to be returned.
+ * It keeps track of how many times it has been called through an ApplicationScoped CallCounter.
+ */
+@RequestScoped
+public class ServiceA {
 
-    @Test
-    public void testDeployment() {
-      testEndpoint("/mp-servicemesh-sample/serviceA", 200, "ServiceBClient fallback");
+    @Inject
+    ServiceBClientImpl serviceBClient;
+    
+    @Inject
+    CallCounter callCounter;
+    
+    public ServiceData call() throws Exception {
+
+        int callCount = callCounter.increment();
+        
+        ServiceData serviceBData = serviceBClient.call();
+
+        ServiceData data = new ServiceData();
+        data.setSource(this.toString());
+        data.setMessage("Hello from serviceA @ "+data.getTime());
+        data.setData(serviceBData);
+        data.setCallCount(callCount);
+        data.setTries(serviceBClient.getTries());
+        
+        return data;
     }
+    
 }
