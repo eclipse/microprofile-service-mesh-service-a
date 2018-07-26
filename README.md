@@ -5,10 +5,6 @@ This is the serviceA component of the microprofile service mesh sample.
 * [Docker](https://www.docker.com/)
 * [Maven](https://maven.apache.org/install.html)
 * [Java 8]: Any compliant JDK should work.
-  * [Java 8 JDK from Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-  * [Java 8 JDK from IBM (AIX, Linux, z/OS, IBM i)](http://www.ibm.com/developerworks/java/jdk/),
-    or [Download a Liberty server package](https://developer.ibm.com/assets/wasdev/#filter/assetTypeFilters=PRODUCT)
-    that contains the IBM JDK (Windows, Linux)
 
 ## Build
 
@@ -18,7 +14,9 @@ This is the serviceA component of the microprofile service mesh sample.
 
 The pom is designed to contain application server profiles with which you can test and run the service. Currently the *liberty* profile is provided.
 
-## Open Liberty
+You may want to deploy multiple versions of serviceA into the mesh so it's important to consider the uniqueness of image names when building the docker containers. A simple strategy would be to include the profile in the image name. For example, a suitable image name for a Liberty container could be &lt;docker id&gt;/serviceb-liberty. Using an image name of this form will allow you to use the script supplied in the [microprofile-service-mesh](https://github.com/eclipse/microprofile-service-mesh) repository to deploy your services into a cluster.
+
+## Open Liberty Profile (liberty)
 
 ### Run the service locally
 
@@ -26,9 +24,13 @@ The pom is designed to contain application server profiles with which you can te
 
 The service will be accessible at http://localhost:8080/mp-servicemesh-sample/serviceA
 
-### Run the service locally in a Docker container
+### Package the service in a Docker image
 
-    docker build -t servicea -f src/main/profiles/liberty/Dockerfile .
-    docker run -p 8080:8080 servicea
+    mvn -P liberty install
+    docker build -t <docker id>/servicea-liberty -f src/main/profiles/liberty/Dockerfile .
 
-The service will be accessible at http://localhost:8080/mp-servicemesh-sample/serviceA
+### Run the Docker image locally
+
+    docker run -p 8080:9080 <docker id>/servicea-liberty
+
+The service will be accessible at http://localhost:9080/mp-servicemesh-sample/serviceA
