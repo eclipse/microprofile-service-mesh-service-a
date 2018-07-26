@@ -17,20 +17,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Contributors:
- *   2018-06-19 - Jon Hawkes / IBM Corp
- *      Initial code
- *
  *******************************************************************************/
+package org.eclipse.microprofile.servicemesh.servicea;
 
-package it;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-import org.junit.Test;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-public class ServiceAEndpointTest extends EndpointTest {
+/**
+ * A rest client interface for ServiceB.
+ */
+@RegisterRestClient
+@Path("/")
+public interface ServiceBClient {
 
-    @Test
-    public void testDeployment() {
-      testEndpoint("/mp-servicemesh-sample/serviceA", 200, "ServiceBClient fallback");
-    }
+    //Currently produces plain text but will soon be converted to json
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String call() throws Exception;
+    
 }

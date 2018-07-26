@@ -28,7 +28,7 @@ package org.eclipse.microprofile.servicemesh.servicea;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("mp-servicemesh-sample")
+@ApplicationPath("/")
 public class ServiceAApplication extends Application {
 
 }
