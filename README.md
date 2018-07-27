@@ -32,3 +32,24 @@ The service will be accessible at http://localhost:8080/mp-servicemesh-sample/se
     docker run -p 8080:8080 servicea
 
 The service will be accessible at http://localhost:8080/mp-servicemesh-sample/serviceA
+
+## Thorntail
+
+### Run the service locally
+
+    mvn package -Pthorntail
+    java -jar target/service-a-thorntail.jar
+    
+or    
+    
+    mvn -Pthorntail thorntail:run -Dwildfly-swarm.useUberJar=true
+
+The service will be accessible at http://localhost:8080/mp-servicemesh-sample/serviceA
+
+### Run the service in a Docker container
+
+    mvn package -Pthorntail
+    docker build -t serviceb -f src/main/profiles/liberty/Dockerfile .
+    docker run -p 8080:8080 serviceb
+
+The service will be accessible at http://localhost:8080/mp-servicemesh-sample/serviceA

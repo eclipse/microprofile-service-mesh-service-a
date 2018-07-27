@@ -16,7 +16,7 @@
     <version.download-maven-plugin>1.4.0</version.download-maven-plugin>
     <version.maven-surefire-plugin>2.18.1</version.maven-surefire-plugin>
     <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
-    
+    <version.maven-resources-plugin>3.1.0</version.maven-resources-plugin>
   </properties>
 
   <dependencies>
@@ -83,7 +83,7 @@
     <profile>
       <id>liberty</id>
       <properties>
-        <app.name>${project.artifactid}</app.name>
+        <app.name>${project.artifactId}</app.name>
         <default.http.port>8080</default.http.port>
         <default.https.port>8443</default.https.port>
         <testServerHttpPort>${default.http.port}</testServerHttpPort>
@@ -93,7 +93,6 @@
         <version.maven-failsafe-plugin>2.18.1</version.maven-failsafe-plugin>
         <!-- Liberty runtime -->
         <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
-        <version.maven-resources-plugin>3.1.0</version.maven-resources-plugin>
         <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
       </properties>
       <dependencies>
@@ -230,5 +229,122 @@
         </plugins>
       </build>
     </profile>
+
+
+    <!-- Thorntail Profile -->
+    <profile>
+    <id>thorntail</id>
+      <properties>
+        <version.thorntail>2.0.0.Final</version.thorntail>
+        <version.docker-maven-plugin>0.26.1</version.docker-maven-plugin>
+        <version.fabric8-maven-plugin>3.5.40</version.fabric8-maven-plugin>
+
+        <docker.host>tcp://192.168.64.19:2376</docker.host>
+        <docker.registry>172.30.1.1:5000</docker.registry>
+      </properties>
+
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>bom-all</artifactId>
+            <version>${version.thorntail}</version>
+            <scope>import</scope>
+            <type>pom</type>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+
+      <dependencies>
+        <!-- Thorntail Fractions for the implementation -->
+        <dependency>
+          <groupId>io.thorntail</groupId>
+          <artifactId>microprofile</artifactId>
+          <!-- that should not be needed.See THORN-2015 -->
+          <exclusions>
+            <exclusion>
+              <groupId>org.wildfly.swarm</groupId>
+              <artifactId>config-api-runtime</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+<!-- the next ones should be in the above, but unfortunately are missing in TT 2.0
+    See THORN-2093
+-->
+        <dependency>
+             <groupId>io.thorntail</groupId>
+             <artifactId>microprofile-openapi</artifactId>
+           </dependency>
+           <dependency>
+             <groupId>io.thorntail</groupId>
+             <artifactId>microprofile-opentracing</artifactId>
+           </dependency>
+           <dependency>
+             <groupId>io.thorntail</groupId>
+             <artifactId>microprofile-restclient</artifactId>
+           </dependency>
+
+   <!-- only from TT 2.1 on
+    <dependency>
+          <groupId>io.thorntail</groupId>
+          <artifactId>jaeger</artifactId>
+        </dependency>
+   -->   </dependencies>
+
+      <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${version.maven-resources-plugin}</version>
+            <executions>
+              <execution>
+                <id>copy-resources</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${basedir}/target/${project.artifactId}/WEB-INF</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${basedir}/src/main/profiles/thorntail/config/</directory>
+                      <filtering>false</filtering>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+
+          <plugin>
+            <groupId>io.thorntail</groupId>
+            <artifactId>thorntail-maven-plugin</artifactId>
+            <version>${version.thorntail}</version>
+            <configuration>
+              <properties>
+                <!--<swarm.bind.address>127.0.0.1</swarm.bind.address>-->
+                <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+              </properties>
+            </configuration>
+
+            <executions>
+              <execution>
+                <goals>
+                  <goal>package</goal>
+                </goals>
+                <configuration>
+                  <hollow>false</hollow>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
 </project>
