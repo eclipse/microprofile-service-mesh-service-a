@@ -37,6 +37,10 @@ public interface ServiceBClient {
     //Currently produces plain text but will soon be converted to json
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String call() throws Exception;
+    public String callPlainText() throws Exception;
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public ServiceData call() throws Exception;
     
 }

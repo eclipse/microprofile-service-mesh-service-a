@@ -31,8 +31,8 @@ public class ServiceData {
     private String source;
     private String message;
     private ServiceData data;
-    private int callCount;
-    private int tries;
+    private long callCount;
+    private long tries;
     private boolean fallback = false;
     
     public Date getTime() {
@@ -59,19 +59,19 @@ public class ServiceData {
         this.message = message;
     }
 
-    public int getCallCount() {
+    public long getCallCount() {
         return callCount;
     }
 
-    public void setCallCount(int callCount) {
+    public void setCallCount(long callCount) {
         this.callCount = callCount;
     }
 
-    public int getTries() {
+    public long getTries() {
         return tries;
     }
 
-    public void setTries(int tries) {
+    public void setTries(long tries) {
         this.tries = tries;
     }
 
