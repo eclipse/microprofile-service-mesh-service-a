@@ -76,7 +76,7 @@
         <os><family>!Windows</family></os>
       </activation>
       <properties>
-        <mvn.extension></mvn.extension>
+        <mvn.extension/>
       </properties>
     </profile>
     <!-- Liberty Profile -->
@@ -235,12 +235,7 @@
     <profile>
     <id>thorntail</id>
       <properties>
-        <version.thorntail>2.0.0.Final</version.thorntail>
-        <version.docker-maven-plugin>0.26.1</version.docker-maven-plugin>
-        <version.fabric8-maven-plugin>3.5.40</version.fabric8-maven-plugin>
-
-        <docker.host>tcp://192.168.64.19:2376</docker.host>
-        <docker.registry>172.30.1.1:5000</docker.registry>
+        <version.thorntail>2.1.0.Final</version.thorntail>
       </properties>
 
       <dependencyManagement>
@@ -260,36 +255,14 @@
         <dependency>
           <groupId>io.thorntail</groupId>
           <artifactId>microprofile</artifactId>
-          <!-- that should not be needed.See THORN-2015 -->
-          <exclusions>
-            <exclusion>
-              <groupId>org.wildfly.swarm</groupId>
-              <artifactId>config-api-runtime</artifactId>
-            </exclusion>
-          </exclusions>
         </dependency>
-<!-- the next ones should be in the above, but unfortunately are missing in TT 2.0
-    See THORN-2093
--->
-        <dependency>
-             <groupId>io.thorntail</groupId>
-             <artifactId>microprofile-openapi</artifactId>
-           </dependency>
-           <dependency>
-             <groupId>io.thorntail</groupId>
-             <artifactId>microprofile-opentracing</artifactId>
-           </dependency>
-           <dependency>
-             <groupId>io.thorntail</groupId>
-             <artifactId>microprofile-restclient</artifactId>
-           </dependency>
 
-   <!-- only from TT 2.1 on
-    <dependency>
+        <!-- the concrete tracer -->
+        <dependency>
           <groupId>io.thorntail</groupId>
           <artifactId>jaeger</artifactId>
         </dependency>
-   -->   </dependencies>
+      </dependencies>
 
       <build>
         <finalName>${project.artifactId}</finalName>
@@ -302,12 +275,12 @@
             <executions>
               <execution>
                 <id>copy-resources</id>
-                <phase>validate</phase>
+                <phase>generate-resources</phase>
                 <goals>
                   <goal>copy-resources</goal>
                 </goals>
                 <configuration>
-                  <outputDirectory>${basedir}/target/${project.artifactId}/WEB-INF</outputDirectory>
+                  <outputDirectory>${basedir}/target/classes</outputDirectory>
                   <resources>
                     <resource>
                       <directory>${basedir}/src/main/profiles/thorntail/config/</directory>
@@ -318,7 +291,6 @@
               </execution>
             </executions>
           </plugin>
-
 
           <plugin>
             <groupId>io.thorntail</groupId>
