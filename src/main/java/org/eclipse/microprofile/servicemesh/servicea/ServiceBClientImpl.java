@@ -65,10 +65,8 @@ public class ServiceBClientImpl {
                                              .build(ServiceBClient.class);
         
         
-        String serviceBMessage = serviceBClient.call();
-        ServiceData serviceBData = new ServiceData();
-        serviceBData.setMessage(serviceBMessage);
-        serviceBData.setCallCount(1);
+        ServiceData serviceBData = serviceBClient.call();
+        serviceBData.setTries(getTries());
 
         return serviceBData;
     }

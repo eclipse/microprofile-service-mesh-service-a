@@ -28,6 +28,10 @@ package org.eclipse.microprofile.servicemesh.servicea;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Metric;
+
 /**
  * ServiceA tries to call ServiceB (via a Rest Client) and then wrap the response up in a data bean to be returned.
  * It keeps track of how many times it has been called through an ApplicationScoped CallCounter.
@@ -39,11 +43,13 @@ public class ServiceA {
     ServiceBClientImpl serviceBClient;
     
     @Inject
-    CallCounter callCounter;
-    
+    @Metric(name="callCounter")
+    Counter callCounter;
+
+    @Counted(name="callCounter", monotonic=true)
     public ServiceData call() throws Exception {
 
-        int callCount = callCounter.increment();
+        long callCount = callCounter.getCount();
         
         ServiceData serviceBData = serviceBClient.call();
 
@@ -52,7 +58,7 @@ public class ServiceA {
         data.setMessage("Hello from serviceA @ "+data.getTime());
         data.setData(serviceBData);
         data.setCallCount(callCount);
-        data.setTries(serviceBClient.getTries());
+        data.setTries(1);
         
         return data;
     }
