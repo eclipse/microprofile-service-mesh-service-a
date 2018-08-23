@@ -54,7 +54,7 @@ public class ServiceBClientImpl {
 
     @Retry(maxRetries = 2)
     @Fallback(fallbackMethod = "fallback")
-    ServiceData call(TracerStuff ts) throws Exception {
+    ServiceData call(TracerHeaders ts) throws Exception {
         ++tries;
 
         String urlString = getURL();
@@ -74,7 +74,7 @@ public class ServiceBClientImpl {
     }
 
     @SuppressWarnings("unused")
-    public ServiceData fallback(TracerStuff _ts) {
+    public ServiceData fallback(TracerHeaders _ts) {
 
         ServiceData data = new ServiceData();
         data.setSource(this.toString());

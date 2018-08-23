@@ -55,7 +55,7 @@ public class ServiceAEndpoint {
                                 @HeaderParam("x-b3-flags") String xflags,
                                 @HeaderParam("x-ot-span-context") String xotspan) throws Exception {
 
-        TracerStuff ts = new TracerStuff();
+        TracerHeaders ts = new TracerHeaders();
         ts.user = user;
         ts.xreq = xreq;
         ts.xtraceid = xtraceid;

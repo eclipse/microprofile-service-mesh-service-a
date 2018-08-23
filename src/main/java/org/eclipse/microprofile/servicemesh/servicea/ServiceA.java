@@ -47,7 +47,7 @@ public class ServiceA {
     Counter callCounter;
 
     @Counted(name="callCounter", monotonic=true)
-    public ServiceData call(TracerStuff ts) throws Exception {
+    public ServiceData call(TracerHeaders ts) throws Exception {
 
         long callCount = callCounter.getCount();
 

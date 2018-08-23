@@ -24,7 +24,7 @@ package org.eclipse.microprofile.servicemesh.servicea;
  * POJO to store the incoming trace data and to forward it on the outgoing call
  * @author hrupp
  */
-public class TracerStuff {
+public class TracerHeaders {
   String user;
   String xreq;
   String xtraceid;
@@ -36,7 +36,7 @@ public class TracerStuff {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("TracerStuff{");
+    final StringBuilder sb = new StringBuilder("TracerHeaders{");
     sb.append("user='").append(user).append('\'');
     sb.append(", xreq='").append(xreq).append('\'');
     sb.append(", xtraceid='").append(xtraceid).append('\'');
