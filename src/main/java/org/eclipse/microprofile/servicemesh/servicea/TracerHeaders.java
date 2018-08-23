@@ -21,7 +21,16 @@
 package org.eclipse.microprofile.servicemesh.servicea;
 
 /**
- * POJO to store the incoming trace data and to forward it on the outgoing call
+ * POJO to store the incoming trace data and to forward it on the outgoing call.
+ * This is needed as otherwise Istio will see this as two different traces.
+ * See https://istio.io/docs/tasks/telemetry/distributed-tracing/#understanding-what-happened
+ * for what to do in your appllication and
+ * https://medium.com/@pilhuhn/working-on-microprofile-service-mesh-istio-and-kiali-26d6c01b45cc
+ * for a more throughout explanation on what is happening if those headers are not
+ * propagated.
+ *
+ * Once MicroProfile specs and implementations have been augmented to automatically
+ * propagate these headers, this class and its usages can go away.
  * @author hrupp
  */
 public class TracerHeaders {
