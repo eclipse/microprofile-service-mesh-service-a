@@ -41,17 +41,17 @@ public class ServiceA {
 
     @Inject
     ServiceBClientImpl serviceBClient;
-    
+
     @Inject
     @Metric(name="callCounter")
     Counter callCounter;
 
     @Counted(name="callCounter", monotonic=true)
-    public ServiceData call() throws Exception {
+    public ServiceData call(TracerStuff ts) throws Exception {
 
         long callCount = callCounter.getCount();
-        
-        ServiceData serviceBData = serviceBClient.call();
+
+        ServiceData serviceBData = serviceBClient.call(ts);
 
         ServiceData data = new ServiceData();
         data.setSource(this.toString());
@@ -59,8 +59,8 @@ public class ServiceA {
         data.setData(serviceBData);
         data.setCallCount(callCount);
         data.setTries(1);
-        
+
         return data;
     }
-    
+
 }

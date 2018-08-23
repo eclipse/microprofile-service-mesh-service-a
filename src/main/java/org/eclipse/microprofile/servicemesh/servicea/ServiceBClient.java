@@ -21,6 +21,7 @@
 package org.eclipse.microprofile.servicemesh.servicea;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -38,9 +39,16 @@ public interface ServiceBClient {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String callPlainText() throws Exception;
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceData call() throws Exception;
-    
+    public ServiceData call(@HeaderParam("end-user") String user,
+                                @HeaderParam("x-request-id") String xreq,
+                                @HeaderParam("x-b3-traceid") String xtraceid,
+                                @HeaderParam("x-b3-spanid") String xspanid,
+                                @HeaderParam("x-b3-parentspanid") String xparentspanid,
+                                @HeaderParam("x-b3-sampled") String xsampled,
+                                @HeaderParam("x-b3-flags") String xflags,
+                                @HeaderParam("x-ot-span-context") String xotspan) throws Exception;
+
 }
