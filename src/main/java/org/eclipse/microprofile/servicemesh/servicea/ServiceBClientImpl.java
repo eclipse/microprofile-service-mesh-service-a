@@ -41,38 +41,41 @@ public class ServiceBClientImpl {
     @Inject
     @ConfigProperty(name="serviceB_host", defaultValue="localhost")
     String serviceB_host;
-    
+
     @Inject
     @ConfigProperty(name="serviceB_http_port", defaultValue="8080")
     String serviceB_http_port;
-    
+
     @Inject
     @ConfigProperty(name="serviceB_context_root", defaultValue="/mp-servicemesh-sample/serviceB")
     String serviceB_context_root;
-    
+
     private int tries;
 
     @Retry(maxRetries = 2)
     @Fallback(fallbackMethod = "fallback")
-    public ServiceData call() throws Exception {
+    ServiceData call(TracerHeaders ts) throws Exception {
         ++tries;
 
         String urlString = getURL();
         URL url = new URL(urlString);
-        
+
         ServiceBClient serviceBClient = RestClientBuilder.newBuilder()
                                              .baseUrl(url)
                                              .build(ServiceBClient.class);
-        
-        
-        ServiceData serviceBData = serviceBClient.call();
+
+
+        ServiceData serviceBData = serviceBClient.call(ts.user,ts.xreq,ts.xtraceid,ts.xspanid,ts.xparentspanid,
+                                                       ts.xsampled,ts.xflags,ts.xotspan);
+
         serviceBData.setTries(getTries());
 
         return serviceBData;
     }
 
-    public ServiceData fallback() {
-        
+    @SuppressWarnings("unused")
+    public ServiceData fallback(TracerHeaders _ts) {
+
         ServiceData data = new ServiceData();
         data.setSource(this.toString());
         data.setCallCount(1);
@@ -82,12 +85,12 @@ public class ServiceBClientImpl {
 
         return data;
     }
-    
-    public int getTries() {
+
+    int getTries() {
         return tries;
     }
 
-    public String getURL() {
+    private String getURL() {
         String slash = "/";
         if(serviceB_context_root.startsWith(slash)) {
             slash = "";
