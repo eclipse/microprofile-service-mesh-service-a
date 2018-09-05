@@ -16,7 +16,8 @@ This is the serviceA component of the microprofile service mesh sample.
 
 ## Package and run the service
 
-The pom is designed to contain application server profiles with which you can test and run the service. Currently the *liberty* profile is provided.
+The pom is designed to contain application server profiles with which you can test and run the service. Currently the *liberty* and 
+*thorntail* profile is provided.
 
 ## Open Liberty
 
@@ -49,7 +50,7 @@ The service will be accessible at http://localhost:8080/mp-servicemesh-sample/se
 ### Run the service in a Docker container
 
     mvn package -Pthorntail
-    docker build -t servicea -f src/main/profiles/liberty/Dockerfile .
+    docker build -t servicea -f src/main/profiles/thorntail/Dockerfile .
     docker run -p 8080:8080 servicea
 
 The service will be accessible at http://localhost:8080/mp-servicemesh-sample/serviceA
