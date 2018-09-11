@@ -26,6 +26,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
@@ -33,7 +34,6 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 /**
  * A CDI wrapper around the ServiceB Rest Client which allows us to add fault tolerance annotations (Retry and Fallback).
  * If the call to ServiceB fails then first it is retried and then, if it still fails, a fallback method is used instead.
- * In future versions, hopefully this class won't be needed.
  */
 @Dependent
 public class ServiceBClientImpl {
@@ -52,9 +52,21 @@ public class ServiceBClientImpl {
 
     private int tries;
 
-    @Retry(maxRetries = 2)
+    /**
+     * The default values on serviceB are that it will fail 20% of the time and when it does fail, it will take 500ms and then it will stay failed for 2000ms
+     * If it does not fail then serviceB simulates some work for 100ms.
+     * 
+     * If serviceB fails then we retry at most 5 times. However, since those retries should be in quick succession (no delay), the CircuitBreaker
+     * should open after just one retry.
+     * 
+     * @param ts
+     * @return
+     * @throws Exception
+     */
+    @Retry(maxRetries = 5)
     @Fallback(fallbackMethod = "fallback")
-    ServiceData call(TracerHeaders ts) throws Exception {
+    @CircuitBreaker(failureRatio=0.5, requestVolumeThreshold=4, successThreshold=2)
+    public ServiceData call(TracerHeaders ts) throws Exception {
         ++tries;
 
         String urlString = getURL();
@@ -73,7 +85,6 @@ public class ServiceBClientImpl {
         return serviceBData;
     }
 
-    @SuppressWarnings("unused")
     public ServiceData fallback(TracerHeaders _ts) {
 
         ServiceData data = new ServiceData();
