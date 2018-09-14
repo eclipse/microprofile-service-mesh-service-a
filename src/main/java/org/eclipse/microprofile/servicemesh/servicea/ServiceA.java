@@ -25,6 +25,9 @@
 
 package org.eclipse.microprofile.servicemesh.servicea;
 
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -51,7 +54,8 @@ public class ServiceA {
 
         long callCount = callCounter.getCount();
 
-        ServiceData serviceBData = serviceBClient.call(ts);
+        Future<ServiceData> serviceBFuture = serviceBClient.call(ts);
+        ServiceData serviceBData = serviceBFuture.get(60, TimeUnit.SECONDS);
 
         ServiceData data = new ServiceData();
         data.setSource(this.toString());
