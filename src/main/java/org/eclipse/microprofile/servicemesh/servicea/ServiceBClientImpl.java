@@ -21,21 +21,26 @@
 package org.eclipse.microprofile.servicemesh.servicea;
 
 import java.net.URL;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 /**
  * A CDI wrapper around the ServiceB Rest Client which allows us to add fault tolerance annotations (Retry and Fallback).
  * If the call to ServiceB fails then first it is retried and then, if it still fails, a fallback method is used instead.
- * In future versions, hopefully this class won't be needed.
  */
-@Dependent
+@ApplicationScoped
 public class ServiceBClientImpl {
 
     @Inject
@@ -52,9 +57,25 @@ public class ServiceBClientImpl {
 
     private int tries;
 
-    @Retry(maxRetries = 2)
+    /**
+     * By default, serviceB will take somewhere between 100 and 5000ms to perform it's simulated work.
+     * The Timeout on this method is set to 2000ms so it may fail.
+     * If it fails then the method will be retried a maximum of 5 times.
+     * Although the maximum number of retries is set to 5, the CircuitBreaker is set to open if 2 out of the last 4 calls fail (timeout).
+     * Once open, by default the CircuitBreaker will stay open for 10000ms, during which time all calls will fail immediately.
+     * After 5000ms, if the next two calls are successful then the CircuitBreaker will re-close completely.
+     * If all 5 of the retries fail (e.g. if the CircuitBreaker is open) then the fallback method will be called instead.
+     * 
+     * @param ts
+     * @return
+     * @throws Exception
+     */
+    @Retry(maxRetries = 5)
     @Fallback(fallbackMethod = "fallback")
-    ServiceData call(TracerHeaders ts) throws Exception {
+    @CircuitBreaker(failureRatio=0.5, requestVolumeThreshold=4, successThreshold=2, delay=10000, delayUnit=ChronoUnit.MILLIS)
+    @Asynchronous
+    @Timeout(value=2000, unit=ChronoUnit.MILLIS)
+    public Future<ServiceData> call(TracerHeaders ts) throws Exception {
         ++tries;
 
         String urlString = getURL();
@@ -70,11 +91,10 @@ public class ServiceBClientImpl {
 
         serviceBData.setTries(getTries());
 
-        return serviceBData;
+        return CompletableFuture.completedFuture(serviceBData);
     }
 
-    @SuppressWarnings("unused")
-    public ServiceData fallback(TracerHeaders _ts) {
+    public Future<ServiceData> fallback(TracerHeaders _ts) {
 
         ServiceData data = new ServiceData();
         data.setSource(this.toString());
@@ -83,7 +103,7 @@ public class ServiceBClientImpl {
         data.setTries(getTries());
         data.setFallback(true);
 
-        return data;
+        return CompletableFuture.completedFuture(data);
     }
 
     int getTries() {
