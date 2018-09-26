@@ -94,6 +94,8 @@
         <!-- Liberty runtime -->
         <version.liberty-maven-plugin>2.2</version.liberty-maven-plugin>
         <version.openliberty-runtime>RELEASE</version.openliberty-runtime>
+        <!-- Zipkin user feature download link -->
+        <zipkin.usr.feature>https://github.com/WASdev/sample.opentracing.zipkintracer/releases/download/1.1/liberty-opentracing-zipkintracer-1.1-sample.zip</zipkin.usr.feature>
       </properties>
       <dependencies>
         <dependency>
@@ -225,6 +227,26 @@
               <summaryFile>${project.build.directory}/test-reports/it/failsafe-summary.xml</summaryFile>
               <reportsDirectory>${project.build.directory}/test-reports/it</reportsDirectory>
             </configuration>
+          </plugin>
+          <!-- For downloading zipkin extension -->
+          <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <version>${version.download-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>install-tracer</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <url>${zipkin.usr.feature}</url>
+                  <unpack>true</unpack>
+                  <outputDirectory>${project.build.directory}/liberty/wlp/usr</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

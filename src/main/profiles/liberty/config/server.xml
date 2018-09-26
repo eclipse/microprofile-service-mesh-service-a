@@ -11,7 +11,10 @@
     <feature>mpMetrics-1.1</feature>
     <feature>mpJwt-1.0</feature>
     <feature>mpOpenAPI-1.0</feature>
+    <feature>mpOpenTracing-1.1</feature>
     <feature>jsonp-1.0</feature>
+
+    <feature>usr:opentracingZipkin-0.31</feature>
   </featureManager>
 
   <keyStore id="defaultKeyStore" password="m1cropr0file" />
