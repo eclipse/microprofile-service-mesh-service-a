@@ -65,7 +65,7 @@ public class ServiceBClientImpl {
      * Once open, by default the CircuitBreaker will stay open for 10000ms, during which time all calls will fail immediately.
      * After 5000ms, if the next two calls are successful then the CircuitBreaker will re-close completely.
      * If all 5 of the retries fail (e.g. if the CircuitBreaker is open) then the fallback method will be called instead.
-     * 
+     *
      * @param ts
      * @return
      * @throws Exception
@@ -75,7 +75,7 @@ public class ServiceBClientImpl {
     @CircuitBreaker(failureRatio=0.5, requestVolumeThreshold=4, successThreshold=2, delay=10000, delayUnit=ChronoUnit.MILLIS)
     @Asynchronous
     @Timeout(value=2000, unit=ChronoUnit.MILLIS)
-    public Future<ServiceData> call(TracerHeaders ts) throws Exception {
+    public Future<ServiceData> call(TracerHeaders ts, String userAgent) throws Exception {
         ++tries;
 
         String urlString = getURL();
@@ -86,15 +86,16 @@ public class ServiceBClientImpl {
                                              .build(ServiceBClient.class);
 
 
-        ServiceData serviceBData = serviceBClient.call(ts.user,ts.xreq,ts.xtraceid,ts.xspanid,ts.xparentspanid,
-                                                       ts.xsampled,ts.xflags,ts.xotspan);
+        ServiceData serviceBData = serviceBClient.call(ts.user, ts.xreq, ts.xtraceid, ts.xspanid, ts.xparentspanid,
+                                                       ts.xsampled, ts.xflags, ts.xotspan, userAgent);
 
         serviceBData.setTries(getTries());
 
         return CompletableFuture.completedFuture(serviceBData);
     }
 
-    public Future<ServiceData> fallback(TracerHeaders _ts) {
+    @SuppressWarnings("unused")
+    public Future<ServiceData> fallback(TracerHeaders _ts, String userAgent) {
 
         ServiceData data = new ServiceData();
         data.setSource(this.toString());

@@ -28,6 +28,7 @@ package org.eclipse.microprofile.servicemesh.servicea;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import java.net.InetAddress;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -50,16 +51,24 @@ public class ServiceA {
     Counter callCounter;
 
     @Counted(name="callCounter", monotonic=true)
-    public ServiceData call(TracerHeaders ts) throws Exception {
+    public ServiceData call(TracerHeaders ts, String userAgent) throws Exception {
 
         long callCount = callCounter.getCount();
 
-        Future<ServiceData> serviceBFuture = serviceBClient.call(ts);
+        Future<ServiceData> serviceBFuture = serviceBClient.call(ts, userAgent);
         ServiceData serviceBData = serviceBFuture.get(60, TimeUnit.SECONDS);
+
+        String hostname;
+        try {
+             hostname = InetAddress.getLocalHost()
+                                   .getHostName();
+         } catch (java.net.UnknownHostException e) {
+             hostname = e.getMessage();
+         }
 
         ServiceData data = new ServiceData();
         data.setSource(this.toString());
-        data.setMessage("Hello from serviceA @ "+data.getTime());
+        data.setMessage("Hello from serviceA on >" + hostname + "< and user-agent >" + userAgent + "< @ "+ data.getTime());
         data.setData(serviceBData);
         data.setCallCount(callCount);
         data.setTries(1);

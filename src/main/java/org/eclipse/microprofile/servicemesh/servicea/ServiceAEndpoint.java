@@ -53,7 +53,9 @@ public class ServiceAEndpoint {
                                 @HeaderParam("x-b3-parentspanid") String xparentspanid,
                                 @HeaderParam("x-b3-sampled") String xsampled,
                                 @HeaderParam("x-b3-flags") String xflags,
-                                @HeaderParam("x-ot-span-context") String xotspan) throws Exception {
+                                @HeaderParam("x-ot-span-context") String xotspan,
+                                @HeaderParam("user-agent") String userAgent
+                            ) throws Exception {
 
         TracerHeaders ts = new TracerHeaders();
         ts.user = user;
@@ -66,7 +68,7 @@ public class ServiceAEndpoint {
         ts.xotspan = xotspan;
 
 
-        ServiceData data = serviceA.call(ts);
+        ServiceData data = serviceA.call(ts, userAgent);
 
         return data;
     }
