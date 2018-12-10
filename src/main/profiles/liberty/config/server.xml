@@ -1,19 +1,7 @@
 <server description="Sample Liberty server">
 
   <featureManager>
-    <!-- Pending issue #4275 -->
-    <!--<feature>microprofile-1.3</feature>-->
-
-    <feature>mpFaultTolerance-1.0</feature>
-    <feature>mpHealth-1.0</feature>
-    <feature>mpConfig-1.2</feature>
-    <feature>mpRestClient-1.0</feature>
-    <feature>mpMetrics-1.1</feature>
-    <feature>mpJwt-1.0</feature>
-    <feature>mpOpenAPI-1.0</feature>
-    <feature>mpOpenTracing-1.1</feature>
-    <feature>jsonp-1.0</feature>
-
+    <feature>microprofile-2.0</feature>
     <feature>usr:opentracingZipkin-0.31</feature>
   </featureManager>
 
