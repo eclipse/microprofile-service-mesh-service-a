@@ -1,4 +1,4 @@
-FROM open-liberty:webProfile7
+FROM open-liberty:microProfile2
 MAINTAINER IBM Java engineering at IBM Cloud
 COPY /target/liberty/wlp/usr/servers/defaultServer /config/
 COPY /target/liberty/wlp/usr/extension /opt/ol/wlp/usr/extension/
