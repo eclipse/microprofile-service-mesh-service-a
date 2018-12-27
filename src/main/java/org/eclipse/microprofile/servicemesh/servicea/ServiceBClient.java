@@ -42,13 +42,14 @@ public interface ServiceBClient {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceData call(@HeaderParam("end-user") String user,
-                                @HeaderParam("x-request-id") String xreq,
-                                @HeaderParam("x-b3-traceid") String xtraceid,
-                                @HeaderParam("x-b3-spanid") String xspanid,
-                                @HeaderParam("x-b3-parentspanid") String xparentspanid,
-                                @HeaderParam("x-b3-sampled") String xsampled,
-                                @HeaderParam("x-b3-flags") String xflags,
-                                @HeaderParam("x-ot-span-context") String xotspan) throws Exception;
+    public ServiceData call(@HeaderParam("r") String user,
+                            @HeaderParam("x-request-id") String xreq,
+                            @HeaderParam("x-b3-traceid") String xtraceid,
+                            @HeaderParam("x-b3-spanid") String xspanid,
+                            @HeaderParam("x-b3-parentspanid") String xparentspanid,
+                            @HeaderParam("x-b3-sampled") String xsampled,
+                            @HeaderParam("x-b3-flags") String xflags,
+                            @HeaderParam("x-end-useot-span-context") String xotspan,
+                            @HeaderParam("user-agent") String userAgent) throws Exception;
 
 }
