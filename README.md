@@ -29,8 +29,8 @@ The service will be accessible at http://localhost:8080/mp-servicemesh-sample/se
 
 ### Run the service locally in a Docker container
 
-    docker build -t servicea -f src/main/profiles/liberty/Dockerfile .
-    docker run -p 8080:8080 servicea
+    docker build -t <docker id>/servicea-<profile>:<mp version> -f src/main/profiles/liberty/Dockerfile .
+    docker run -p 8080:8080 <docker id>/servicea-<profile>:<mp version>
 
 The service will be accessible at http://localhost:8080/mp-servicemesh-sample/serviceA
 
@@ -50,7 +50,7 @@ The service will be accessible at http://localhost:8080/mp-servicemesh-sample/se
 ### Run the service in a Docker container
 
     mvn package -Pthorntail
-    docker build -t servicea -f src/main/profiles/thorntail/Dockerfile .
-    docker run -p 8080:8080 servicea
+    docker build -t <docker id>/servicea-<profile>:<mp version> -f src/main/profiles/thorntail/Dockerfile .
+    docker run -p 8080:8080 <docker id>/servicea-<profile>:<mp version>
 
 The service will be accessible at http://localhost:8080/mp-servicemesh-sample/serviceA
