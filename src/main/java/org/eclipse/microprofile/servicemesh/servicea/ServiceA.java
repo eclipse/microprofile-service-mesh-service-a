@@ -50,7 +50,7 @@ public class ServiceA {
     @Metric(name="callCounter")
     Counter callCounter;
 
-    @Counted(name="callCounter", monotonic=true)
+    @Counted(name="callCounter")
     public ServiceData call(TracerHeaders ts, String userAgent) throws Exception {
 
         long callCount = callCounter.getCount();
