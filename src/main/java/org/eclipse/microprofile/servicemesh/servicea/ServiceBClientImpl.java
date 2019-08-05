@@ -34,7 +34,6 @@ import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
-import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 /**
@@ -76,7 +75,6 @@ public class ServiceBClientImpl {
     @CircuitBreaker(failureRatio=0.5, requestVolumeThreshold=4, successThreshold=2, delay=10000, delayUnit=ChronoUnit.MILLIS)
     @Asynchronous
     @Timeout(value=2000, unit=ChronoUnit.MILLIS)
-    @Operation(description="Retrieve response from ServiceB", summary="Calling serviceB")
     public Future<ServiceData> call(TracerHeaders ts, String userAgent) throws Exception {
         ++tries;
 

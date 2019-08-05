@@ -1,8 +1,8 @@
 <server description="Sample Liberty server">
 
   <featureManager>
-    <feature>microprofile-3.0</feature>
-    <feature>usr:opentracingZipkin-0.32</feature>
+    <feature>microprofile-2.0</feature>
+    <feature>usr:opentracingZipkin-0.31</feature>
   </featureManager>
 
   <keyStore id="defaultKeyStore" password="m1cropr0file" />

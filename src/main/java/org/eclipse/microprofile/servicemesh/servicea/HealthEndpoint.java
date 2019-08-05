@@ -29,14 +29,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
-import org.eclipse.microprofile.health.Liveness;
 
-
-@Liveness
+@Health
 @ApplicationScoped
-public class LivenessEndpoint implements HealthCheck {
+public class HealthEndpoint implements HealthCheck {
 
   /*
    *  Health is controlled by a config property
@@ -51,11 +50,11 @@ public class LivenessEndpoint implements HealthCheck {
 
     if (healthy) {
       hcr = HealthCheckResponse.named("serviceA")
-                                .withData("alive", healthy)
+                                .withData("healthy", healthy)
                                 .up().build();
     } else {
       hcr = HealthCheckResponse.named("serviceA")
-                                .withData("alive", healthy)
+                                .withData("healthy", healthy)
                                 .down().build();
     }
 
